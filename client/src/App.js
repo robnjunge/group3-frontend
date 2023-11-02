@@ -18,7 +18,7 @@ function App() {
 
   useEffect(() => {
     const fetchData = () => {
-      fetch('http://127.0.0.1:5555/')
+      fetch('http://127.0.0.1:5555/reviews')
         .then((response) => {
           if (response.ok) {
             return response.json();
