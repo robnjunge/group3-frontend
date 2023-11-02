@@ -7,7 +7,7 @@ const Navbar = () => {
     <nav className="navbar">
       <div className="navbar-logo">
         <p>
-          <span className="company-name">HOME DECOR SOLUTIONS</span>
+          <span className="company-name">E-shop Product Feedback </span>
         </p>
         <p>
           <span className="company-salutation">We The Best</span>
