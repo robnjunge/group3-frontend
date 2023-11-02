@@ -1,145 +1,126 @@
 import React, { useState } from 'react';
+import { Formik, Field, Form, ErrorMessage } from 'formik';
+import * as Yup from 'yup';
 import './login.css';
 
 const LoginForm = () => {
-  const [username, setUsername] = useState('');
-  const [password, setPassword] = useState('');
-  const [name, setName] = useState('');
-  const [email, setEmail] = useState('');
-  const [isSigningUp, setIsSigningUp] = useState(false);
+  const initialValues = {
+    username: '',
+    password: '',
+    name: '',
+    email: '',
+    isSigningUp: false,
+    error: '',
+  };
+
+  const validationSchema = Yup.object().shape({
+    username: Yup.string().required('Username is required'),
+    password: Yup.string().required('Password is required'),
+    name: Yup.string().when('isSigningUp', {
+      is: true,
+      then: Yup.string().required('Name is required'),
+    }),
+    email: Yup.string().when('isSigningUp', {
+      is: true,
+      then: Yup.string().email('Invalid email').required('Email is required'),
+    }),
+  });
+
   const [error, setError] = useState('');
 
-  const handleUsernameChange = (e) => {
-    setUsername(e.target.value);
-  };
+  const handleSignup = async (values) => {
+    try {
+      const response = await fetch('http://127.0.0.1:5555/signup', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(values),
+      });
 
-  const handlePasswordChange = (e) => {
-    setPassword(e.target.value);
-  };
-
-  const handleNameChange = (e) => {
-    setName(e.target.value);
-  };
-
-  
-
-  const handleEmailChange = (e) => {
-    setEmail(e.target.value);
-  };
-
-  const handleToggleSignup = () => {
-    setIsSigningUp(!isSigningUp);
-    setError('');
-    // Clear the sign-up form fields when switching to login mode
-    if (!isSigningUp) {
-      setName('');
-      setEmail('');
-    }
-  };
-
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-
-    if (isSigningUp && (!name ||!email)) {
-      setError('Please provide all the required information.');
-      return;
-    }
-
-    if (!username || !password) {
-      setError('Please provide your username and password.');
-      return;
-    }
-
-    setError('');
-
-    if (isSigningUp) {
-      // Perform signup logic here
-      try {
-        const response = await fetch('http://127.0.0.1:5000/buyer', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ username, password, name, email }),
-        });
-
-        if (response.ok) {
-          // User signed up successfully
-          alert('Successfully signed up!');
-          window.location.href = './home';
-        } else {
-          const errorData = await response.json();
-          setError(errorData.message || 'Failed to sign up.');
-        }
-      } catch (error) {
-        console.log('Error:', error);
-        setError('Failed to sign up. Please try again later.');
+      if (response.ok) {
+        alert('Successfully signed up!');
+      } else {
+        const errorData = await response.json();
+        setError(errorData.error || 'Failed to sign up.');
       }
-    } else {
-      // Perform login logic here
-      try {
-        const response = await fetch('http://127.0.0.1:5000/login', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ username, password }),
-        });
+    } catch (error) {
+      console.log('Error:', error);
+      setError('Failed to sign up. Please try again later.');
+    }
+  };
 
-        if (response.ok) {
-          // User logged in successfully
-          alert('Successfully logged in!');
-          window.location.href = './home';
-        } else {
-          const errorData = await response.json();
-          setError(errorData.message || 'Failed to log in.');
-        }
-      } catch (error) {
-        console.log('Error:', error);
-        setError('Failed to log in. Please try again later.');
+  const handleLogin = async (values) => {
+    try {
+      const response = await fetch('http://127.0.0.1:5555/login', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(values),
+      });
+
+      if (response.ok) {
+        alert('Successfully logged in!');
+      } else {
+        const errorData = await response.json();
+        setError(errorData.error || 'Failed to log in.');
       }
+    } catch (error) {
+      console.log('Error:', error);
+      setError('Failed to log in. Please try again later.');
     }
   };
 
   return (
-    <form
-      className="login-form"
-      onSubmit={handleSubmit}
-      style={{
-        display: 'flex',
-        flexDirection: 'column',
-        alignItems: 'center',
-        marginTop: '1em',
+    <Formik
+      initialValues={initialValues}
+      validationSchema={validationSchema}
+      onSubmit={(values) => {
+        setError('');
+        if (values.isSigningUp) {
+          handleSignup(values);
+        } else {
+          handleLogin(values);
+        }
       }}
     >
-      <label>
-        Username:
-        <input type="text" value={username} onChange={handleUsernameChange} />
-      </label>
-      <br />
-      <label>
-        Password:
-        <input type="password" value={password} onChange={handlePasswordChange} />
-      </label>
-      <br />
-      {isSigningUp && (
-        <div className="signup-fields">
+      {({ values }) => (
+        <Form className="login-form">
           <label>
-            Name:
-            <input type="text" value={name} onChange={handleNameChange} />
+            Username:
+            <Field type="text" name="username" />
+            <ErrorMessage name="username" component="div" className="error-message" />
           </label>
-          <br />
-          <br />
+
           <label>
-            Email Address:
-            <input type="email" value={email} onChange={handleEmailChange} />
+            Password:
+            <Field type="password" name="password" />
+            <ErrorMessage name="password" component="div" className="error-message" />
           </label>
-          <br />
-        </div>
+
+          {values.isSigningUp && (
+            <div className="signup-fields">
+              <label>
+                Name:
+                <Field type="text" name="name" />
+                <ErrorMessage name="name" component="div" className="error-message" />
+              </label>
+
+              <label>
+                Email Address:
+                <Field type="email" name="email" />
+                <ErrorMessage name="email" component="div" className="error-message" />
+              </label>
+            </div>
+          )}
+
+          {error && <p className="error-message">{error}</p>}
+
+          <button type="submit">{values.isSigningUp ? 'Sign Up' : 'Login'}</button>
+
+          <button type="button" onClick={() => values.isSigningUp = !values.isSigningUp}>
+            {values.isSigningUp ? 'Switch to Login' : 'Switch to Sign Up'}
+          </button>
+        </Form>
       )}
-      {error && <p className="error-message">{error}</p>}
-      <button type="submit">{isSigningUp ? 'Sign Up' : 'Login'}</button>
-      <br />
-      <button type="button" onClick={handleToggleSignup}>
-        {isSigningUp ? 'Switch to Login' : 'Switch to Sign Up'}
-      </button>
-    </form>
+    </Formik>
   );
 };
 
