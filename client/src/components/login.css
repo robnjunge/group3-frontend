@@ -1,58 +1,51 @@
-/* style.css */
-
-.login-form {
-    width: 300px;
-    padding: 1em;
-    border: 1px solid #ccc;
-    border-radius: 4px;
-  }
-  
-  .login-form label {
-    display: block;
-    margin-bottom: 0.5em;
-  }
-  
-  .login-form input[type="text"],
-  .login-form input[type="password"],
-  .login-form input[type="date"],
-  .login-form input[type="email"] {
+.w-full {
     width: 100%;
-    padding: 0.5em;
-    border: 1px solid #ccc;
-    border-radius: 4px;
+    max-width: 24rem; 
+    margin: 0 auto; 
+    padding: 1rem;
+    background-color: #fff;
+    border: 1px solid #e2e8f0;
+    border-radius: 0.5rem;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
   }
   
-  .login-form .signup-fields {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    grid-gap: 0.5em;
+  h5 {
+    font-size: 1.25rem; 
+    color: #1a202c;
+    text-align: center;
+    margin-bottom: 1.25rem; 
+  }
+
+  form {
+    margin-top: 1.25rem; 
   }
   
-  .login-form .error-message {
-    color: red;
-    margin-top: 0.5em;
+  input[type="email"],
+  input[type="password"] {
+    width: 100%;
+    padding: 0.625rem; 
+    background-color: #f7fafc;
+    border: 1px solid #cbd5e0;
+    border-radius: 0.5rem;
+    font-size: 0.875rem;
+    color: #1a202c;
+    margin-bottom: 0.625rem; 
   }
   
-  .login-form button {
-    padding: 0.5em 1em;
-    background-color: #4caf50;
-    color: #fff;
+  button {
+    width: 100%;
+    padding: 0.625rem 1.25rem;
+    background-color: #0a1f35;
+    color: #b3b60a;
+    font-weight: 500;
     border: none;
-    border-radius: 4px;
+    border-radius: 0.5rem;
     cursor: pointer;
-    transition: background-color 0.3s ease;
+    font-size: 0.875rem;
+    text-align: center;
   }
   
-  .login-form button:hover {
-    background-color: #45a049;
-  }
-  
-  .login-form button[type="button"] {
-    margin-top: 0.5em;
-    background-color: #2196f3;
-  }
-  
-  .login-form button[type="button"]:hover {
-    background-color: #1976d2;
+  button:hover {
+    background-color: #1c39ae;
   }
   
